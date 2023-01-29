@@ -2,6 +2,9 @@
     flex-direction: row;
 }
 
+.ellipses-input{
+    width:50px;
+}
 button:disabled {
     opacity: 50%;
     color: black;

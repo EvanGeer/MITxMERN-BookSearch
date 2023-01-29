@@ -3,28 +3,36 @@ import './pagination.css';
 
 export function Pagination({perPage, total, onPageChange, current}) {
     const { useEffect, useState } = React;
+    const [showTextEntry, setShowTextEntry] = useState(-1);
+    const [goTo, setGoTo] = useState(-1);
+
 
     const pageCount = Math.ceil(total/perPage);
     const maxPagination = 9;
     
     function getTrimmedPagination(pageArray) {
+        // get the amount typically on the left and the right
+        // divide by 2 to get the center
+        // subtract 2 to account for the fisrt and last
+        let dynamicPageCount = Math.floor((maxPagination-2)/2)
+
         let start = 
-            (current < maxPagination) 
+            (current <= maxPagination - dynamicPageCount - 1) 
             ? 1
             
-            : (current > (pageCount - maxPagination)) 
-            ? pageCount - maxPagination + 2
+            : (current > (pageCount - dynamicPageCount)) 
+            ? pageCount - maxPagination + 1
             
-            : current-(Math.floor((maxPagination)/2));
+            : current - dynamicPageCount - 1;
 
         let end = 
-            (current < maxPagination) 
-            ? maxPagination - 2
+            (current <= dynamicPageCount + 1) 
+            ? maxPagination - 1
             
-            : (current > (pageCount - maxPagination)) 
+            : (current > (pageCount - dynamicPageCount)) 
             ? pageCount - 1
             
-            : current+(Math.floor((maxPagination)/2));
+            : current + dynamicPageCount;
         
         // start = Math.max(
         //     1,
@@ -54,11 +62,6 @@ export function Pagination({perPage, total, onPageChange, current}) {
         return trimmedPageArray;
     }
     const [pages, setPages] = useState(getPages());
-    //     [
-    //     {page:1, start:0},
-    //     {page:2, start:100},
-    //     {page:3, start:200},
-    // ]);
 
     function handleClick(pageNumber) {
         console.log(`Pagination Click: ${pageNumber}`);
@@ -66,6 +69,21 @@ export function Pagination({perPage, total, onPageChange, current}) {
 
     }
 
+    function handleEllipsesClick(e,i) {
+        console.log(i);
+        setShowTextEntry(i);
+        e.target.focus();
+    }
+    function handleEllispesSubmit(e) {
+        if(!(e.key === 'Enter' || e.keyCode === 13)) return;
+        if(goTo < 1 || goTo > pageCount) return;
+        onPageChange(Number(goTo));
+        setShowTextEntry(!showTextEntry);
+    }
+    function toggleEllipses(e){
+        // console.log(e);
+        setShowTextEntry(-1);
+    }
     return (
         <div className="pagination">
             <button 
@@ -75,7 +93,18 @@ export function Pagination({perPage, total, onPageChange, current}) {
             {pages.map(
                 (x,i) => 
                 <>
-                {(i !== 0 && (x.page - pages[i-1].page) > 1) ? <>...</> : null}
+                {(i !== 0 && (x.page - pages[i-1].page) > 1) 
+                    ? showTextEntry === i
+                        ? <input 
+                            autoFocus={true}
+                            className='ellipses-input'
+                            type="number" 
+                            onChange={(e) => setGoTo(e.target.value)}
+                            onBlur={toggleEllipses}
+                            onKeyDown={handleEllispesSubmit}
+                          ></input>
+                        : <small onClick={(e) => handleEllipsesClick(e,i)}>...</small> 
+                    : null}
                 <button 
                     key={x.start}
                     onClick={() => handleClick(x.page)}

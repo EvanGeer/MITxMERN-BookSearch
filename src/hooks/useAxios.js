@@ -3,14 +3,16 @@ import axios from 'axios';
 import { dataReducer } from "./dataReducer";
 
 // import { useState } from 'react/cjs/react.production.min';
-export function useAxios(initialUrl) {
+export function useAxios(initialUrl, verboseLogging = false, cacheResults = true) {
   // static constants
   const { useState, useEffect, useReducer } = React;
+
+  const [resultsCache, setResultsCache] = useState({});
 
   // state
   const [url, setUrl] = useState(initialUrl);
   const fetch = (newUrl) => {
-    console.log(`Re-Render useAxios: ${newUrl}`);
+    if(verboseLogging) console.log(`Re-Render useAxios: ${newUrl}`);
     setUrl(newUrl);
   };
 
@@ -21,18 +23,36 @@ export function useAxios(initialUrl) {
   });
 
   useEffect(() => {
-    console.log('Url Changed: '+url);
+    if(verboseLogging) console.log('Url Changed: '+url);
     let didCancel = false;
     const getData = async () => {
       dispatch({ type: 'FETCH_INIT' });
       if (didCancel) {
-        console.log('Cancelled');
+        if(verboseLogging) console.log('Cancelled');
         return;
       }
       try {
+        if (cacheResults && resultsCache[url]){
+          if(verboseLogging) console.log(`retrieving cached data`);
+          if(verboseLogging) console.log(resultsCache[url]);
+          // if(verboseLogging) alert(resultsCache[url]);
+          dispatch({
+            type: 'FETCH_SUCCESS',
+            payload: {...resultsCache[url]}
+          });
+          return;
+        }
+
         const result = await axios(url);
         if (!didCancel) {
-          console.log(result?.data);
+          if (cacheResults) {
+            let newCache = 
+              {...resultsCache};
+              newCache[url] = result?.data
+            
+            setResultsCache(newCache)
+          }
+          if(verboseLogging) console.log(result?.data);
           dispatch({
             type: 'FETCH_SUCCESS',
             payload: result?.data
@@ -40,7 +60,7 @@ export function useAxios(initialUrl) {
         }
       } catch (er) {
         if (!didCancel) {
-          console.error(er);
+          if(verboseLogging) console.error(er);
           dispatch({ type: 'FETCH_FAILURE' });
         }
       }

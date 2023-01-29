@@ -7,11 +7,11 @@ export function RatingStars({ ratingData }) {
   const [rating, setRating] = useState(ratingData);
 
   function getStars(rating) {
-    console.log(`rating: ${rating}`);
+    // console.log(`rating: ${rating}`);
     let roundedRating = Math.round(rating * 2) / 2;
     let halfStar = roundedRating % 2 > 0;
     let starCount = Math.ceil(roundedRating);
-    console.log(starCount);
+    // console.log(starCount);
 
     let stars = <>
       {Array.from({ length: Math.ceil(roundedRating) }, (_, i) => {

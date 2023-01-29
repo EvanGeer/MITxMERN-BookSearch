@@ -28,7 +28,7 @@ export function Book({ book }) {
 
     const getRatingsUrl = (x) => {
       let url =  `https://openlibrary.org${x}/ratings.json`;
-      console.log(url);
+      // console.log(url);
       return url;
     }
     

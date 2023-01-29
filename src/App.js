@@ -16,7 +16,7 @@ function App() {
   const [url, setUrl] = useState(baseUrl+intialSearch);
   const [searchText, setSearchText] = useState(intialSearch);
   const [page, setPage] = useState(Number(localStorage.getItem('page') ?? 1));
-  const [{ data, isLoading, isError }, pingOpenLibrary] = useAxios(url);
+  const [{ data, isLoading, isError }, pingOpenLibrary] = useAxios(url, true);
   
   // hooks
   useEffect(() => {
@@ -34,38 +34,12 @@ function App() {
 
   },[page]);
 
-  // useEffect(() => {
-  //   if(isLoading || isError || !data?.docs?.length) return;
-
-  //   const isbns = data?.docs
-  //     .map(x => x.isbn)
-  //     .flat()
-  //     .filter(x => x?.length > 1)
-  //     .join(',');
-  //   console.log(isbns);
-  //   if (!isbns?.length) return;
-  //   let url = goodReadsUrl+isbns;
-  //   pingGoogdReads(url);
-  // },[isLoading]);
-
-
-
-
-
-  // const goodReadsUrl = 'https://www.goodreads.com/book/review_counts.json?isbns='
-  // const [{ goodReadsData, goodReadsLoading, goodReadsError }, pingGoogdReads] = useAxios();
-  // useEffect(() => {
-  //   if(goodReadsLoading || !goodReadsData?.book?.length) return;
-  //   console.log(goodReadsData);
-  // },[goodReadsLoading])
-
-
   // event handlers
   const handleChange = (e) => setSearchText(e.target.value)
   const handleSearch = (e) => {
     e?.preventDefault();
 
-    console.log(`Sumbit: ${searchText}`)
+    console.log(`Handling Search Sumbit: ${searchText}`)
     
     // we need to reset pagination if the user navigated alogn
     // however, changing pagination will trigger a fetch.

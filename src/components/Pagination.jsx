@@ -5,7 +5,7 @@ export function Pagination({perPage, total, onPageChange, current}) {
     const { useEffect, useState } = React;
     const [showTextEntry, setShowTextEntry] = useState(-1);
     const [goTo, setGoTo] = useState(-1);
-
+    const [currentPage, setCurrentPage] = useState(current);
 
     const pageCount = Math.ceil(total/perPage);
     const maxPagination = 9;
@@ -17,31 +17,23 @@ export function Pagination({perPage, total, onPageChange, current}) {
         let dynamicPageCount = Math.floor((maxPagination-2)/2)
 
         let start = 
-            (current <= maxPagination - dynamicPageCount - 1) 
+            (currentPage <= maxPagination - dynamicPageCount - 1) 
             ? 1
             
-            : (current > (pageCount - dynamicPageCount)) 
+            : (currentPage > (pageCount - dynamicPageCount)) 
             ? pageCount - maxPagination + 1
             
-            : current - dynamicPageCount - 1;
+            : currentPage - dynamicPageCount - 1;
 
         let end = 
-            (current <= dynamicPageCount + 1) 
+            (currentPage <= dynamicPageCount + 1) 
             ? maxPagination - 1
             
-            : (current > (pageCount - dynamicPageCount)) 
+            : (currentPage > (pageCount - dynamicPageCount)) 
             ? pageCount - 1
             
-            : current + dynamicPageCount;
+            : currentPage + dynamicPageCount;
         
-        // start = Math.max(
-        //     1,
-        //     current-(Math.floor((maxPagination)/2))
-        // );
-        // let end = Math.min(
-        //     pageCount-2, 
-        //     start + maxPagination - 2
-        // );
         console.log(`start: ${start}, end: ${end}`);
         return [pageArray[0], ...pageArray.slice(start,end), pageArray[pageCount-1]];
     }
@@ -58,15 +50,15 @@ export function Pagination({perPage, total, onPageChange, current}) {
         const trimmedPageArray = pageArray.length > maxPagination 
             ? getTrimmedPagination(pageArray)
             : pageArray;
-        console.log(trimmedPageArray);
+        console.log(`Pagination.GetPages(): ${trimmedPageArray}`);
         return trimmedPageArray;
     }
-    const [pages, setPages] = useState(getPages());
+    const [pages, setPages] = useState(() => getPages());
 
     function handleClick(pageNumber) {
         console.log(`Pagination Click: ${pageNumber}`);
+        setCurrentPage(pageNumber)
         onPageChange(pageNumber);
-
     }
 
     function handleEllipsesClick(e,i) {
@@ -77,18 +69,22 @@ export function Pagination({perPage, total, onPageChange, current}) {
     function handleEllispesSubmit(e) {
         if(!(e.key === 'Enter' || e.keyCode === 13)) return;
         if(goTo < 1 || goTo > pageCount) return;
+        setCurrentPage(Number(goTo))
         onPageChange(Number(goTo));
         setShowTextEntry(!showTextEntry);
     }
     function toggleEllipses(e){
-        // console.log(e);
         setShowTextEntry(-1);
     }
+
+    useEffect(() => {
+        setPages(getPages());
+    },[currentPage])
     return (
         <div className="pagination">
             <button 
-                onClick={() => handleClick(current-1)} 
-                disabled={current === 1}
+                onClick={() => handleClick(currentPage-1)} 
+                disabled={currentPage === 1}
             >&lt;&lt;</button>
             {pages.map(
                 (x,i) => 
@@ -108,13 +104,13 @@ export function Pagination({perPage, total, onPageChange, current}) {
                 <button 
                     key={x.start}
                     onClick={() => handleClick(x.page)}
-                    disabled={x.page === current}
+                    disabled={x.page === currentPage}
                     >{x.page}</button>
                 </>
             )}
             <button  
-                onClick={() => handleClick(current+1)} 
-                disabled={pageCount == current}
+                onClick={() => handleClick(currentPage+1)} 
+                disabled={pageCount == currentPage}
             >&gt;&gt;</button>
         </div>
     )

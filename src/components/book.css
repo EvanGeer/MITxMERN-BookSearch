@@ -7,7 +7,7 @@
     box-shadow: 2px 2px 10px dimgray;
     border-radius: 8px;
     display: grid;
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 200px 1fr;
     margin: 16px;
 }
 
@@ -17,12 +17,19 @@
     grid-auto-flow: dense;
 }
 
+.star {
+    height: 20px;
+}
+
 .subhead {
     display:flex;
     font-size: medium;
     align-items: flex-start;
     font-weight: bold;
     padding: 8px;
+    grid-row: 3;
+    /* border: 1px black solid; */
+    grid-column: 2;
 }
 
 .detail{
@@ -32,13 +39,13 @@
 }
 
 .book-title {
-    grid-area: title;
+    /* grid-area: title; */
     /* border: 1px black solid; */
-    grid-column: 2;
+    grid-column: span;
     grid-row: 1;
 }
 
-img {
+.amazon {
     max-width: 50px;
     max-height: 80px;
 }
@@ -53,8 +60,13 @@ img {
 }
 
 .cover-image {
-    max-width:80px;
-    border: 1px black solid;
+    max-width:180px;
+    background-color: #96aac555;
     grid-column: 1;
-    grid-row: 1/2 span;
+    grid-row: 1;
+    margin-top: 60px;
+    border: 1px black solid;
+    box-shadow: 3px 3px 30px #00000080;
+    min-width: 180px;
+    min-height: 180px;
 }

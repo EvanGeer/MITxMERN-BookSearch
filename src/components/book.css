@@ -61,12 +61,12 @@
 
 .cover-image {
     max-width:180px;
-    background-color: #96aac555;
+    background-color: #bec2c82b;
     grid-column: 1;
     grid-row: 1;
     margin-top: 60px;
     border: 1px black solid;
     box-shadow: 3px 3px 30px #00000080;
     min-width: 180px;
-    min-height: 180px;
+    min-height: 240px;
 }

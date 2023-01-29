@@ -33,12 +33,11 @@ export function Book({ book }) {
     }
     
   const [{ data: ratingsData, isLoading: ratingsLoading, isError }, getRatings] = useAxios(getRatingsUrl(book.key));
-
+ 
   const AmazonBooks = () => {
     bookData.id_amazon?.filter(x => x?.length > 1)?.map(x => 
       <div>
         <a href={`https://www.amazon.com/dp/${x}?&linkCode=ll1&tag=evangeer-20&linkId=65c644c8c93f704026ee57deb7edd761&language=en_US&ref_=as_li_ss_tl`}>
-          {/* ... */}
           <img className='amazon' alt="removed..." border="0" src={`//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${x}&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=evangeer-20&language=en_US`} />
           <img className='amazon' src={`https://ir-na.amazon-adsystem.com/e/ir?t=evangeer-20&language=en_US&l=li2&o=1&a=${x}`} width="1" height="1" border="0" alt="" />
         </a>

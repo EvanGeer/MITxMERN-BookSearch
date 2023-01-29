@@ -1,0 +1,9 @@
+.pagination {
+    flex-direction: row;
+}
+
+button:disabled {
+    opacity: 50%;
+    color: black;
+    cursor:default;
+}
